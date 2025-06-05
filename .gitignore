@@ -202,5 +202,6 @@ main.py
 main1.py 
 database.db 
 model/retinal_resnet50_finetuned.h5
-static\uploads/
+static/uploads/
+
 
