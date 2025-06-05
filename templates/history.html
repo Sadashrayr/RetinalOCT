@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-4">Scan History</h2>
+{% for scan in scans %}
+<div class="scan-card bg-white p-6 rounded-lg shadow-md mb-4">
+    <h3 class="text-lg font-semibold">Scan on {{ scan.date }}</h3>
+    <p><strong>Prediction:</strong> {{ scan.prediction }}</p>
+    <p><strong>Confidence:</strong> {{ scan.confidence }}%</p>
+    <p><strong>Explanation:</strong></p>
+    <div class="whitespace-pre-wrap">{{ scan.explanation | safe }}</div>
+    <div class="flex space-x-4 mt-2">
+        <a href="{{ url_for('generate_heatmap_route', scan_id=scan.id) }}" class="text-blue-600 hover:underline">View Heatmap</a>
+        <a href="{{ url_for('download_report', scan_id=scan.id) }}" class="text-blue-600 hover:underline">Download Report</a>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

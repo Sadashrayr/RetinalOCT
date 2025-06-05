@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="text-xl font-semibold mb-2">Prediction Trends</h3>
+<canvas id="predictionChart" class="mb-6"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Parse prediction counts from JSON
+    const rawPredictionCounts = JSON.parse('{{ prediction_counts | tojson }}');
+    console.log('Raw Prediction Counts:', rawPredictionCounts);
+
+    // Sanitize data
+    const validClasses = ['AMD', 'CNV', 'CSR', 'DME', 'DR', 'DRUSEN', 'MH', 'NORMAL'];
+    const dataValues = validClasses.map(cls => Number(rawPredictionCounts[cls]) || 0);
+    console.log('Data Values:', dataValues);
+
+    const ctx = document.getElementById('predictionChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: validClasses,
+            datasets: [{
+                label: 'Prediction Counts',
+                data: dataValues,
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                    '#9966FF', '#FF9F40', '#C9CBCF', '#7BC043'
+                ],
+                borderColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                    '#9966FF', '#FF9F40', '#C9CBCF', '#7BC043'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true, title: { display: true, text: 'Number of Predictions' } },
+                x: { title: { display: true, text: 'Prediction Class' } }
+            },
+            plugins: { title: { display: true, text: 'Prediction Trends' } }
+        }
+    });
+</script>
+<h3 class="text-xl font-semibold mb-2">Your Latest Scan</h3>
+<div class="overflow-x-auto">
+    <table class="w-full bg-white shadow-md rounded-lg">
+        <thead class="bg-gray-200">
+            <tr>
+                <th class="p-3 text-left">Date</th>
+                <th class="p-3 text-left">Prediction</th>
+                <th class="p-3 text-left">Confidence</th>
+                <th class="p-3 text-left">Explanation</th>
+                <th class="p-3 text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if scans %}
+            {% set latest_scan = scans[0] %}
+            <tr class="border-b">
+                <td class="p-3">{{ latest_scan.date }}</td>
+                <td class="p-3">{{ latest_scan.prediction }}</td>
+                <td class="p-3">{{ latest_scan.confidence }}%</td>
+                <td class="p-3">
+                    <div class="whitespace-pre-wrap">{{ latest_scan.explanation | safe }}</div>
+                    <form action="{{ url_for('ask_question', scan_id=latest_scan.id) }}" method="POST" class="mt-2">
+                        <input type="text" name="question" placeholder="Ask a question about this scan" class="border rounded p-1 w-full" required>
+                        <button type="submit" class="mt-2 bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700">Ask</button>
+                    </form>
+                </td>
+                <td class="p-3">
+                    <a href="{{ url_for('download_report', scan_id=latest_scan.id) }}" class="text-blue-600 hover:underline">Download Report</a>
+                    <a href="{{ url_for('generate_heatmap_route', scan_id=latest_scan.id) }}" class="text-blue-600 hover:underline ml-2">View Heatmap</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="p-3 text-center">No scans available. Upload a new scan to get started!</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+<div class="mt-4 flex space-x-4">
+    <a href="{{ url_for('upload') }}" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Upload New Scan</a>
+    <a href="{{ url_for('export_history') }}" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">Export History</a>
+</div>
+{% endblock %}

@@ -192,3 +192,12 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+venv/
+.env /
+RetinalOCT_Dataset/
+wheat_train.py 
+main.py 
+main1.py 
+database.db 
+
+

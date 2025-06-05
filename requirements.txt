@@ -1,0 +1,16 @@
+scikit-learn
+opencv-python
+flask==2.3.3
+flask-sqlalchemy==3.0.5
+werkzeug==2.3.8
+tensorflow==2.16.1
+numpy==1.26.4
+reportlab==4.0.9
+langchain==0.2.11
+langchain-community==0.2.10
+flask-socketio==5.3.6
+tf-keras-vis==0.8.7
+matplotlib==3.7.2
+psycopg2-binary==2.9.9
+gunicorn==21.2.0
+langchain_groq

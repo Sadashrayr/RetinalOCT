@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCTVision AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <nav class="bg-blue-600 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <!-- Top-left: Welcome message -->
+            <div class="text-lg font-semibold">
+                {% if session.user_id %}
+                {% set user = user %}
+                Welcome, {{ user.username }} ({{ user.role | capitalize }})
+                {% endif %}
+            </div>
+            <!-- Navigation links on the right -->
+            {% if session.user_id %}
+            <ul class="flex space-x-4">
+                <li><a href="{{ url_for('dashboard') }}" class="hover:text-blue-200">Dashboard</a></li>
+                {% if user.role == 'doctor' %}
+                <li><a href="{{ url_for('upload') }}" class="hover:text-blue-200">Upload Scan</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('history') }}" class="hover:text-blue-200">History</a></li>
+                <li><a href="{{ url_for('export_history') }}" class="hover:text-blue-200">Export History</a></li>
+                <li><a href="{{ url_for('logout') }}" class="hover:text-blue-200">Logout</a></li>
+            </ul>
+            {% endif %}
+        </div>
+    </nav>
+    <div class="container mx-auto p-4">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="bg-red-100 text-red-700 p-4 rounded-md mb-4">
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>
