@@ -194,10 +194,13 @@ cython_debug/
 .cursorindexingignore
 venv/
 .env /
+model\
+model/retinal_resnet50_finetuned.h5
 RetinalOCT_Dataset/
 wheat_train.py 
 main.py 
 main1.py 
 database.db 
-
+model/retinal_resnet50_finetuned.h5
+static\uploads/
 
